@@ -2,6 +2,8 @@
 <html style="height: 100%">
 <head>
  <title>Clone of Excuses For Lazy Coders</title>
+ <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.6/material.indigo-pink.min.css">
+ <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 </head>
 <body style="height: 100%">
  <div class="wrapper" style="min-height: 100%; height: auto !important; height: 100%; margin: 0 auto -8em;">
@@ -29,8 +31,8 @@
               <th>建檔時間</th>
           </tr>
           {% for c in customers %}
-              <tr>
-                  <td><a href="javascript:;" id="{{ c.key }}">刪除</a></td>
+              <tr id="{{ c.key }}">
+                  <td><a href="javascript:;" id="{{ c.key }}" class="del">刪除</a></td>
                   <td> {{ c.clientName }} </td>
                   <td> {{ c.type }} </td>
                   <td> {{ c.clientAddress }} </td>
@@ -49,6 +51,54 @@
    <br /><br />&copy; Copyleft
   </center>
  </div>
+
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+ <script src="https://storage.googleapis.com/code.getmdl.io/1.0.6/material.min.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+ <script>
+
+     $(document).ready(function() {
+
+         $(' a[class="del"]').click(function(event) {
+             var _this = $(this);
+             var id = $(this).attr('id');
+             if (id != '') {
+                 id = id.split(', ')[1].split(')')[0];
+             }
+
+             var conf = confirm("Delete file ?");
+             if (conf == true) {
+                 $.ajax({
+                     url: '/customers/delete/'+ id,
+                     type: "DELETE",
+                     dataType: 'json',
+                     beforeSend: function(xhr, settings) {
+                        //  _this.hide();
+                        if (!csrfSafeMethod(settings.type)) {
+                            xhr.setRequestHeader("X-CSRFToken", $.cookie('csrftoken'));
+                        }
+                     },
+                     error: function(error) {
+                         alert(error.status +': '+error.statusText);
+                        //  _this.show();
+                     },
+                     success: function(response) {
+                         if (response.result == 1) {
+                            _this.parent().parent('tr').fadeOut(500);
+                         }
+                         console.log(response.result);
+                     }
+                 });
+             }
+
+         });
+     });
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+ </script>
 
  </body>
 </html>

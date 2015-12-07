@@ -7,6 +7,7 @@ import random
 import logging
 import models
 import time
+import json
 
 from google.appengine.api import users
 
@@ -29,11 +30,8 @@ def home(request):
     else:
         return HttpResponseRedirect(users.create_login_url('/'))
 
-
 def customers(request):
-    # logging.basicConfig(level=logging.INFO)
-    # logging.info('Hello world again!')
-
+    logging.basicConfig(level=logging.INFO)
 
     user = users.get_current_user()
 
@@ -57,7 +55,9 @@ def customers(request):
             'customers': customers
         }
 
-        # logging.info(data)
+        # cc = models.Customers.query().filter(models.Customers.clientName == '4').fetch()
+
+        logging.info(customers)
 
         return render(request, "customers.html", data)
 
@@ -81,3 +81,14 @@ def customers(request):
         response['refresh'] = '3'
         response['URL'] = '/customers/'
         return response
+
+
+def customersDelete(request, id):
+    if request.method == 'DELETE':
+        models.DeleteCustomers(int(id));
+
+        response_data = {}
+        response_data['result'] = 1
+        response_data['message'] = 'success'
+
+        return HttpResponse(json.dumps(response_data), content_type="application/json")
