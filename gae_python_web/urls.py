@@ -3,6 +3,8 @@ from django.conf.urls import patterns, include, url
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
 # admin.autodiscover()
+handler404 = 'app.views.error404'
+handler500 = 'app.views.error500'
 
 urlpatterns = patterns('',
     # Examples:

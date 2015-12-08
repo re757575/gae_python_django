@@ -1,6 +1,7 @@
 #coding=utf-8
 
 from django.http import HttpResponse, HttpResponseRedirect
+from django.template import RequestContext
 from django.shortcuts import render, render_to_response
 from datetime import datetime
 import random
@@ -10,6 +11,18 @@ import time
 import json
 
 from google.appengine.api import users
+
+def error404(request):
+	response = render_to_response('404.html', {}, context_instance=RequestContext(request))
+	response.status_code = 404
+	return response
+
+
+def error500(request):
+	response = render_to_response('500.html', {}, context_instance=RequestContext(request))
+	response.status_code = 500
+	return response
+
 
 def home(request):
 
