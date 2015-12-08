@@ -14,15 +14,17 @@
       <br/>
       <form action="" method="post">
           {% csrf_token %}
-          <div>客戶名稱: <input type="text" name="clientName" value=""></div>
-          <div>客戶類型: <input type="text" name="type" value=""></div>
-          <div>客戶地址: <input type="text" name="clientAddress" value=""></div>
-          <div>客戶電話: <input type="text" name="clientTel" value=""></div>
+          <div>客戶名稱: <input type="text" name="clientName" value="{{ customer.clientName }}"></div>
+          <div>客戶類型: <input type="text" name="type" value="{{ customer.type }}"></div>
+          <div>客戶地址: <input type="text" name="clientAddress" value="{{ customer.clientAddress }}"></div>
+          <div>客戶電話: <input type="text" name="clientTel" value="{{ customer.clientTel }}"></div>
           <button type="submit" name="button">送出</button>
       </form>
 
+    {% if customers %}
       <table>
           <tr>
+              <th colspan="2">Action</th>
               <th>客戶名稱</th>
               <th>客戶類型</th>
               <th>客戶地址</th>
@@ -33,6 +35,7 @@
           {% for c in customers %}
               <tr id="{{ c.key }}">
                   <td><a href="javascript:;" id="{{ c.key }}" class="del">刪除</a></td>
+                  <td><a href="/customers/modify/5328783104016384" id="{{ c.key }}" class="modify">修改</a></td>
                   <td> {{ c.clientName }} </td>
                   <td> {{ c.type }} </td>
                   <td> {{ c.clientAddress }} </td>
@@ -42,7 +45,7 @@
               </tr>
           {% endfor %}
       </table>
-
+      {% endif %}
   </center>
   <div class="push"></div>
  </div>
@@ -59,7 +62,7 @@
 
      $(document).ready(function() {
 
-         $(' a[class="del"]').click(function(event) {
+         $('a[class="del"]').click(function(event) {
              var _this = $(this);
              var id = $(this).attr('id');
              if (id != '') {
@@ -92,6 +95,13 @@
              }
 
          });
+
+         $('a[class="modify"]').each(function() {
+             var id = $(this).attr('id');
+             id = id.split(', ')[1].split(')')[0];
+             $(this).attr('href', '/customers/modify/'+ id);
+         });
+
      });
 
     function csrfSafeMethod(method) {

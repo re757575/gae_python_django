@@ -20,8 +20,8 @@ def AllCustomers():
     return Customers.query()
 
 
-def UpdateCustomers(id, type, clientName, clientAddress):
-    customers = Customers(id=id, clientName=clientName, clientAddress=clientAddress)
+def UpdateCustomers(id, type, clientName, clientAddress, note):
+    customers = Customers(id=id, type=type, clientName=clientName, clientAddress=clientAddress, note=note)
     customers.put()
     return customers
 

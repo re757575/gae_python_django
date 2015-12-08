@@ -11,6 +11,7 @@ import time
 import json
 
 from google.appengine.api import users
+from google.appengine.ext import ndb
 
 def error404(request):
 	response = render_to_response('404.html', {}, context_instance=RequestContext(request))
@@ -91,8 +92,7 @@ def customers(request):
         }
 
         response = render_to_response('success.html', respData);
-        response['refresh'] = '3'
-        response['URL'] = '/customers/'
+        response['refresh'] = '3;URL=/customers/'
         return response
 
 
@@ -105,3 +105,37 @@ def customersDelete(request, id):
         response_data['message'] = 'success'
 
         return HttpResponse(json.dumps(response_data), content_type="application/json")
+
+def customersModify(request, id):
+
+    if request.method == 'GET':
+		customer = ndb.Key('Customers', int(id)).get()
+		data = {
+			'customer': customer
+		}
+		return render(request, "customers.html", data)
+
+    elif request.method == 'POST':
+
+		clientName = request.POST['clientName']
+		type = int(request.POST['type'])
+		clientAddress = request.POST['clientAddress']
+		clientTel = request.POST['clientTel']
+
+		_c = models.Customers()
+		customer = _c.get_by_id(int(id))
+
+		customer.clientName = clientName
+		customer.type = type
+		customer.clientAddress = clientAddress
+		customer.clientTel = clientTel
+		customer.put()
+
+		respData = {
+		    'title': '客戶資料',
+		    'message': '修改成功。 (三秒後自動返回)'
+		}
+
+		response = render_to_response('success.html', respData);
+		response['refresh'] = '3;URL=/customers/'
+		return response
