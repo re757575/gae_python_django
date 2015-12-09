@@ -5,6 +5,16 @@ api_version: 1
 threadsafe: yes
 
 handlers:
+
+- url: /pub/css
+  static_dir: pub/css
+
+- url: /pub/js
+  static_dir: pub/js
+
+- url: /pub/img
+  static_dir: pub/img
+
 - url: .*
   script: main.application
 
