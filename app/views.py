@@ -86,7 +86,7 @@ def customers(request):
         clientTel = request.POST['clientTel']
 
         createTimeStamp = time.mktime(datetime.now().timetuple())
-        models.InsertCustomers(type, clientName, clientAddress, '備註...', user, createTimeStamp)
+        models.InsertCustomers(type, clientName, clientAddress, clientTel, '備註...', user, createTimeStamp)
 
         respData = {
             'title': '客戶資料',

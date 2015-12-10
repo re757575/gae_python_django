@@ -20,14 +20,14 @@ def AllCustomers():
     return Customers.query()
 
 
-def UpdateCustomers(id, type, clientName, clientAddress, note):
+def UpdateCustomers(id, type, clientName, clientAddress, clientTel, note):
     customers = Customers(id=id, type=type, clientName=clientName, clientAddress=clientAddress, note=note)
     customers.put()
     return customers
 
 
-def InsertCustomers(type, clientName, clientAddress, note, createOperatorAccount, createTimeStamp):
-    customers = Customers(type=type, clientName=clientName, clientAddress=clientAddress, note=note, createOperatorAccount=createOperatorAccount, createTimeStamp=createTimeStamp)
+def InsertCustomers(type, clientName, clientAddress, clientTel, note, createOperatorAccount, createTimeStamp):
+    customers = Customers(type=type, clientName=clientName, clientAddress=clientAddress, clientTel=clientTel, note=note, createOperatorAccount=createOperatorAccount, createTimeStamp=createTimeStamp)
     customers.put()
     return customers
 
