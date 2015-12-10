@@ -1,114 +1,181 @@
-<!DOCTYPE HTML>
-<html style="height: 100%">
+<!DOCTYPE html>
+<html>
 <head>
- <title>Clone of Excuses For Lazy Coders</title>
- <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.6/material.indigo-pink.min.css">
- <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+  <title>Starter Template - Materialize</title>
+
+  <!-- CSS  -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="/pub/css/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="/pub/css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
 </head>
-<body style="height: 100%">
- <div class="wrapper" style="min-height: 100%; height: auto !important; height: 100%; margin: 0 auto -8em;">
-  <center style="color: #333; padding-top: 200px; font-family: Courier; font-size: 20px; font-weight: bold;">
-      <div>
-          {{ excuse }}
+<body>
+  <nav class="light-blue lighten-1" role="navigation">
+    <div class="nav-wrapper container"><a id="logo-container" href="/" class="brand-logo">Logo</a>
+      <ul class="right hide-on-med-and-down">
+        <li><a href="{{ logoutUrl }}">登出</a></li>
+      </ul>
+
+      <ul id="nav-mobile" class="side-nav">
+        <li><a href="{{ logoutUrl }}">登出</a></li>
+      </ul>
+      <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+    </div>
+  </nav>
+
+  <div class="section no-pad-bot" id="index-banner">
+      <div class="container">
+
+          <div class="card-panel hoverable">
+              <h5>客戶資料-{{ action }}</h5>
+
+              <div class="row">
+                <form class="col s12" action="" method="post">
+                {% csrf_token %}
+                  <div class="row">
+                    <div class="input-field col s6">
+                      <i class="material-icons prefix">account_circle</i>
+                      <input type="text" name="clientName" class="validate" value="{{ customer.clientName }}" length="50">
+                      <label>客戶名稱</label>
+                    </div>
+                    <div class="input-field col s6">
+                      <select name="type">
+                        <option value="" disabled  {% if customer == None %} selected {% endif %}>Choose your option</option>
+                        {% for key, value in clientType.items %}
+                            <option value="{{ key }}" {% if customer.type == key %} selected {% endif %}>{{ value  }}</option>
+                        {% endfor %}
+                      </select>
+                      <label>客戶類型</label>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="input-field col s6">
+                      <i class="material-icons prefix">home</i>
+                      <input type="text" name="clientAddress" class="validate" value="{{ customer.clientAddress }}" length="100">
+                      <label>客戶地址</label>
+                    </div>
+                    <div class="input-field col s6">
+                      <i class="material-icons prefix">phone</i>
+                      <input type="text" name="clientTel" class="validate" value="{{ customer.clientTel }}" length="10">
+                      <label>客戶電話</label>
+                    </div>
+                  </div>
+                  <div class="row">
+                      <div class="input-field col s12">
+                          <button class="btn waves-effect waves-light" type="submit" name="action">Submit
+                            <i class="material-icons right">send</i>
+                          </button>
+                      </div>
+                  </div>
+                </form>
+              </div>
+
+          </div>
+
+          {% if customers %}
+          <div class="card-panel hoverable">
+              <h5>客戶資料-列表</h5>
+              <table class="responsive-table">
+                  <thead>
+                      <tr>
+                          <th colspan="2">Action</th>
+                          <th>客戶名稱</th>
+                          <th>客戶類型</th>
+                          <th>客戶地址</th>
+                          <th>客戶電話</th>
+                          <th>建檔人員</th>
+                          <th>建檔時間</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                  {% for c in customers %}
+                      <tr id="{{ c.key }}">
+                          <td><a href="javascript:;" id="{{ c.key }}" class="del waves-effect waves-light red btn">delete</a></td>
+                          <td><a href="javascript:;" id="{{ c.key }}" class="modify waves-effect waves-light teal btn">modify</a></td>
+                          <td> {{ c.clientName }} </td>
+                          <td>
+                              {% load keyvalue %}
+                              {{ clientType|get_value_by_key:c.type|default:"未知" }}
+                          </td>
+                          <td> {{ c.clientAddress|default:"N/A" }} </td>
+                          <td> {{ c.clientTel|default:"N/A" }} </td>
+                          <td> {{ c.createOperatorAccount }} </td>
+                          <td> {{ c.createDateTime }} </td>
+                      </tr>
+                  </tbody>
+                  {% endfor %}
+              </table>
+          </div>
+          {% else %}
+          {% endif %}
       </div>
-      <br/>
-      <form action="" method="post">
-          {% csrf_token %}
-          <div>客戶名稱: <input type="text" name="clientName" value="{{ customer.clientName }}"></div>
-          <div>客戶類型: <input type="text" name="type" value="{{ customer.type }}"></div>
-          <div>客戶地址: <input type="text" name="clientAddress" value="{{ customer.clientAddress }}"></div>
-          <div>客戶電話: <input type="text" name="clientTel" value="{{ customer.clientTel }}"></div>
-          <button type="submit" name="button">送出</button>
-      </form>
+  </div>
 
-    {% if customers %}
-      <table>
-          <tr>
-              <th colspan="2">Action</th>
-              <th>客戶名稱</th>
-              <th>客戶類型</th>
-              <th>客戶地址</th>
-              <th>客戶電話</th>
-              <th>建檔人員</th>
-              <th>建檔時間</th>
-          </tr>
-          {% for c in customers %}
-              <tr id="{{ c.key }}">
-                  <td><a href="javascript:;" id="{{ c.key }}" class="del">刪除</a></td>
-                  <td><a href="/customers/modify/5328783104016384" id="{{ c.key }}" class="modify">修改</a></td>
-                  <td> {{ c.clientName }} </td>
-                  <td> {{ c.type }} </td>
-                  <td> {{ c.clientAddress }} </td>
-                  <td> {{ c.clientTel }} </td>
-                  <td> {{ c.createOperatorAccount }} </td>
-                  <td> {{ c.createDateTime }} </td>
-              </tr>
-          {% endfor %}
-      </table>
-      {% endif %}
-  </center>
-  <div class="push"></div>
- </div>
- <div class="footer">
-  <center style="color: #333; font-family: Courier; font-size: 11px;">
-   <br /><br />&copy; Copyleft
-  </center>
- </div>
+  <footer class="page-footer orange">
+    <div class="container">
+    </div>
+    <div class="footer-copyright">
+      <div class="container">
+      Made by <a class="orange-text text-lighten-3" href="http://materializecss.com">Materialize</a>
+      </div>
+    </div>
+  </footer>
 
- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
- <script src="https://storage.googleapis.com/code.getmdl.io/1.0.6/material.min.js"></script>
- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
- <script>
 
-     $(document).ready(function() {
+  <!--  Scripts-->
+  <script src="/pub/js/jquery/jquery-1.9.1.min.js"></script>
+  <script src="/pub/js/materialize/materialize.min.js"></script>
+  <script src="/pub/js/materialize/init.js"></script>
+  <script src="/pub/js/jquery/plugin/jquery.cookie/jquery.cookie.min.js"></script>
+  <script>
+      $(document).ready(function() {
+          $('a[class^="del"]').click(function(event) {
+              var _this = $(this);
+              var id = $(this).attr('id');
+              if (id != '') {
+                  id = id.split(', ')[1].split(')')[0];
+              }
 
-         $('a[class="del"]').click(function(event) {
-             var _this = $(this);
-             var id = $(this).attr('id');
-             if (id != '') {
-                 id = id.split(', ')[1].split(')')[0];
-             }
-
-             var conf = confirm("Delete file ?");
-             if (conf == true) {
-                 $.ajax({
-                     url: '/customers/delete/'+ id,
-                     type: "DELETE",
-                     dataType: 'json',
-                     beforeSend: function(xhr, settings) {
-                        //  _this.hide();
-                        if (!csrfSafeMethod(settings.type)) {
-                            xhr.setRequestHeader("X-CSRFToken", $.cookie('csrftoken'));
-                        }
-                     },
-                     error: function(error) {
-                         alert(error.status +': '+error.statusText);
-                        //  _this.show();
-                     },
-                     success: function(response) {
-                         if (response.result == 1) {
-                            _this.parent().parent('tr').fadeOut(500);
+              var conf = confirm("Delete file ?");
+              if (conf == true) {
+                  $.ajax({
+                      url: '/customers/delete/'+ id,
+                      type: "DELETE",
+                      dataType: 'json',
+                      beforeSend: function(xhr, settings) {
+                         //  _this.hide();
+                         if (!csrfSafeMethod(settings.type)) {
+                             xhr.setRequestHeader("X-CSRFToken", $.cookie('csrftoken'));
                          }
-                         console.log(response.result);
-                     }
-                 });
-             }
+                      },
+                      error: function(error) {
+                          alert(error.status +': '+error.statusText);
+                         //  _this.show();
+                      },
+                      success: function(response) {
+                          if (response.result == 1) {
+                             _this.parent().parent('tr').fadeOut(500);
+                          }
+                          console.log(response.result);
+                      }
+                  });
+              }
 
-         });
+          });
 
-         $('a[class="modify"]').each(function() {
-             var id = $(this).attr('id');
-             id = id.split(', ')[1].split(')')[0];
-             $(this).attr('href', '/customers/modify/'+ id);
-         });
+          $('a[class^="modify"]').each(function() {
+              var id = $(this).attr('id');
+              id = id.split(', ')[1].split(')')[0];
+              $(this).attr('href', '/customers/modify/'+ id);
+          });
 
-     });
+      });
 
-    function csrfSafeMethod(method) {
-        // these HTTP methods do not require CSRF protection
-        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-    }
- </script>
-
- </body>
+     function csrfSafeMethod(method) {
+         // these HTTP methods do not require CSRF protection
+         return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+     }
+  </script>
+  </body>
 </html>

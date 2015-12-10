@@ -66,7 +66,9 @@ def customers(request):
         data = {
             'user': user,
             'excuse': excuse,
-            'customers': customers
+            'customers': customers,
+			'action': '新增',
+			'clientType': {1: '政府', 2: '企業', 3: '個人'}
         }
 
         # cc = models.Customers.query().filter(models.Customers.clientName == '4').fetch()
@@ -111,7 +113,9 @@ def customersModify(request, id):
     if request.method == 'GET':
 		customer = ndb.Key('Customers', int(id)).get()
 		data = {
-			'customer': customer
+			'customer': customer,
+			'action': '修改',
+			'clientType': {1: '政府', 2: '企業', 3: '個人'}
 		}
 		return render(request, "customers.html", data)
 

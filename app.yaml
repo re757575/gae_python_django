@@ -15,6 +15,9 @@ handlers:
 - url: /pub/img
   static_dir: pub/img
 
+- url: /pub/font
+  static_dir: pub/font
+
 - url: .*
   script: main.application
 
