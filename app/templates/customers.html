@@ -53,6 +53,7 @@
           </div>
 
           {% if customers %}
+          {% load keyvalue %}
           <div class="card-panel hoverable">
               <h5>客戶資料-列表</h5>
               <table class="responsive-table">
@@ -74,7 +75,6 @@
                           <td><a href="javascript:;" id="{{ c.key }}" class="modify waves-effect waves-light teal btn">modify</a></td>
                           <td> {{ c.clientName }} </td>
                           <td>
-                              {% load keyvalue %}
                               {{ clientType|get_value_by_key:c.type|default:"未知" }}
                           </td>
                           <td> {{ c.clientAddress|default:"N/A" }} </td>

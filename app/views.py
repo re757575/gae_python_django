@@ -50,22 +50,11 @@ def customers(request):
     user = users.get_current_user()
 
     if request.method == 'GET':
-        # if user is None:
-        #     return HttpResponseRedirect(users.create_login_url('/'))
-
-        excuses = [
-            "It was working in my head",
-            "I thought I fixed that",
-            "Actually, that is a feature",
-            "It works on my machine",
-        ]
-        excuse = random.choice(excuses)
 
         customers = models.AllCustomers()
 
         data = {
             'user': user,
-            'excuse': excuse,
             'customers': customers,
 			'action': '新增',
 			'clientType': {1: '政府', 2: '企業', 3: '個人'}
