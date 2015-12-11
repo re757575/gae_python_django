@@ -1,1 +1,13 @@
-404 error
+{% extends 'base.html' %}
+
+{% block title %} 404 Error {% endblock%}
+
+{% block content %}
+<div class="section no-pad-bot" id="index-banner">
+    <div class="container">
+        <h1>404</h1>
+        <p>無此頁面</p>
+        <a href="javascript:history.back()">返回</a>
+    </div>
+</div>
+{% endblock %}

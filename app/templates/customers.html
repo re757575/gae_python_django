@@ -1,30 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
-  <title>Starter Template - Materialize</title>
+{% extends 'base.html' %}
 
-  <!-- CSS  -->
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link href="/pub/css/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"/>
-  <link href="/pub/css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
-</head>
-<body>
-  <nav class="light-blue lighten-1" role="navigation">
-    <div class="nav-wrapper container"><a id="logo-container" href="/" class="brand-logo">Logo</a>
-      <ul class="right hide-on-med-and-down">
-        <li><a href="{{ logoutUrl }}">登出</a></li>
-      </ul>
+{% block title %} 客戶資料 {% endblock%}
 
-      <ul id="nav-mobile" class="side-nav">
-        <li><a href="{{ logoutUrl }}">登出</a></li>
-      </ul>
-      <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
-    </div>
-  </nav>
-
-  <div class="section no-pad-bot" id="index-banner">
+{% block content %}
+    <div class="section no-pad-bot" id="index-banner">
       <div class="container">
 
           <div class="card-panel hoverable">
@@ -101,7 +80,7 @@
                           <td> {{ c.clientAddress|default:"N/A" }} </td>
                           <td> {{ c.clientTel|default:"N/A" }} </td>
                           <td> {{ c.createOperatorAccount }} </td>
-                          <td> {{ c.createTimeStamp|date:"Y-m-d H:i" }} </td>
+                          <td> {{ c.createDateTime|date:"Y-m-d H:i" }} </td>
                       </tr>
                   </tbody>
                   {% endfor %}
@@ -110,35 +89,22 @@
           {% else %}
           {% endif %}
       </div>
-  </div>
-
-  <footer class="page-footer orange">
-    <div class="container">
     </div>
-    <div class="footer-copyright">
-      <div class="container">
-      Made by <a class="orange-text text-lighten-3" href="http://materializecss.com">Materialize</a>
-      </div>
-    </div>
-  </footer>
+{% endblock%}
 
-
-  <!--  Scripts-->
-  <script src="/pub/js/jquery/jquery-1.9.1.min.js"></script>
-  <script src="/pub/js/materialize/materialize.min.js"></script>
-  <script src="/pub/js/materialize/init.js"></script>
-  <script src="/pub/js/jquery/plugin/jquery.cookie/jquery.cookie.min.js"></script>
-  <script>
-      $(document).ready(function() {
-          $('a[class^="del"]').click(function(event) {
-              var _this = $(this);
-              var id = $(this).attr('id');
-              if (id != '') {
+{% block javascript %}
+    <script src="/pub/js/jquery/plugin/jquery.cookie/jquery.cookie.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('a[class^="del"]').click(function(event) {
+                var _this = $(this);
+                var id = $(this).attr('id');
+                if (id != '') {
                   id = id.split(', ')[1].split(')')[0];
-              }
+                }
 
-              var conf = confirm("Delete file ?");
-              if (conf == true) {
+                var conf = confirm("Delete file ?");
+                if (conf == true) {
                   $.ajax({
                       url: '/customers/delete/'+ id,
                       type: "DELETE",
@@ -160,22 +126,19 @@
                           console.log(response.result);
                       }
                   });
-              }
+                }
+            });
 
-          });
+            $('a[class^="modify"]').each(function() {
+                var id = $(this).attr('id');
+                id = id.split(', ')[1].split(')')[0];
+                $(this).attr('href', '/customers/modify/'+ id);
+            });
+        });
 
-          $('a[class^="modify"]').each(function() {
-              var id = $(this).attr('id');
-              id = id.split(', ')[1].split(')')[0];
-              $(this).attr('href', '/customers/modify/'+ id);
-          });
-
-      });
-
-     function csrfSafeMethod(method) {
+        function csrfSafeMethod(method) {
          // these HTTP methods do not require CSRF protection
          return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-     }
-  </script>
-  </body>
-</html>
+        }
+    </script>
+{% endblock %}

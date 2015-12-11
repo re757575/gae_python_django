@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+    <title>{% block title %}{% endblock %}</title>
+    <!-- CSS  -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="/pub/css/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <link href="/pub/css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+    {% block css %}{% endblock %}
+</head>
+<body>
+    <nav class="light-blue lighten-1" role="navigation">
+      <div class="nav-wrapper container"><a id="logo-container" href="/" class="brand-logo">Logo</a>
+        <ul class="right hide-on-med-and-down">
+          <li><a href="{{ logoutUrl }}">登出</a></li>
+        </ul>
+
+        <ul id="nav-mobile" class="side-nav">
+          <li><a href="{{ logoutUrl }}">登出</a></li>
+        </ul>
+        <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+      </div>
+    </nav>
+
+    {% block content %}{% endblock %}
+
+    <footer class="page-footer orange">
+      <div class="container">
+      </div>
+      <div class="footer-copyright">
+        <div class="container">
+        Made by <a class="orange-text text-lighten-3" href="http://materializecss.com">Materialize</a>
+        </div>
+      </div>
+    </footer>
+
+    <!--  Scripts-->
+    <script src="/pub/js/jquery/jquery-1.9.1.min.js"></script>
+    <script src="/pub/js/materialize/materialize.min.js"></script>
+    <script src="/pub/js/materialize/init.js"></script>
+    {% block javascript %}{% endblock %}
+  </body>
+</html>
