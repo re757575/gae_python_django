@@ -101,7 +101,7 @@
                           <td> {{ c.clientAddress|default:"N/A" }} </td>
                           <td> {{ c.clientTel|default:"N/A" }} </td>
                           <td> {{ c.createOperatorAccount }} </td>
-                          <td> {{ c.createDateTime }} </td>
+                          <td> {{ c.createTimeStamp|date:"Y-m-d H:i" }} </td>
                       </tr>
                   </tbody>
                   {% endfor %}
