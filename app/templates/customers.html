@@ -56,9 +56,10 @@
           {% load keyvalue %}
           <div class="card-panel hoverable">
               <h5>客戶資料-列表</h5>
-              <table class="responsive-table">
+              <table class="responsive-table highlight centered">
                   <thead>
                       <tr>
+                          <th>#</th>
                           <th colspan="2">Action</th>
                           <th>客戶名稱</th>
                           <th>客戶類型</th>
@@ -71,6 +72,7 @@
                   <tbody>
                   {% for c in customers %}
                       <tr id="{{ c.key }}">
+                          <td>{{ forloop.counter }}</td>
                           <td><a href="javascript:;" id="{{ c.key }}" class="del waves-effect waves-light red btn">delete</a></td>
                           <td><a href="javascript:;" id="{{ c.key }}" class="modify waves-effect waves-light teal btn">modify</a></td>
                           <td> {{ c.clientName }} </td>
@@ -81,6 +83,10 @@
                           <td> {{ c.clientTel|default:"N/A" }} </td>
                           <td> {{ c.createOperatorAccount }} </td>
                           <td> {{ c.createDateTime|date:"Y-m-d H:i" }} </td>
+                      </tr>
+                      {% empty %}
+                      <tr>
+                          <td colspan="9">無資料</td>
                       </tr>
                   </tbody>
                   {% endfor %}
