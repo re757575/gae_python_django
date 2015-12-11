@@ -13,7 +13,7 @@ class Customers(ndb.Model):
     note = ndb.TextProperty()
     createOperatorAccount = ndb.UserProperty()
     createDateTime = ndb.DateTimeProperty(auto_now_add=True)
-    createTimeStamp  = ndb.FloatProperty(required=True)
+    createTimeStamp = ndb.FloatProperty(required=True)
 
 
 def AllCustomers():
@@ -21,13 +21,15 @@ def AllCustomers():
 
 
 def UpdateCustomers(id, type, clientName, clientAddress, clientTel, note):
-    customers = Customers(id=id, type=type, clientName=clientName, clientAddress=clientAddress, note=note)
+    customers = Customers(id=id, type=type, clientName=clientName,
+                          clientAddress=clientAddress, note=note)
     customers.put()
     return customers
 
 
 def InsertCustomers(type, clientName, clientAddress, clientTel, note, createOperatorAccount, createTimeStamp):
-    customers = Customers(type=type, clientName=clientName, clientAddress=clientAddress, clientTel=clientTel, note=note, createOperatorAccount=createOperatorAccount, createTimeStamp=createTimeStamp)
+    customers = Customers(type=type, clientName=clientName, clientAddress=clientAddress, clientTel=clientTel,
+                          note=note, createOperatorAccount=createOperatorAccount, createTimeStamp=createTimeStamp)
     customers.put()
     return customers
 
