@@ -18,6 +18,7 @@ urlpatterns = patterns('',
     # url(r'^admin/', include(admin.site.urls)),
     url(r'^$', 'app.views.home'),
     url(r'^customers/$', 'app.views.customers'),
+    url(r'^customers/add/', 'app.views.customersAdd'),
     url(r'^customers/delete/(?P<id>[\w]{16})/$', 'app.views.customersDelete'),
     url(r'^customers/modify/(?P<id>[\w]{16})$', 'app.views.customersModify'),
 )

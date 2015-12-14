@@ -48,31 +48,36 @@ def home(request):
         return HttpResponseRedirect(users.create_login_url('/'))
 
 
+# 客戶資料列表
 def customers(request):
-    logging.basicConfig(level=logging.INFO)
-
     user = users.get_current_user()
 
     if request.method == 'GET':
-
         customers = models.AllCustomers()
-
         data = {
             'user': user,
             'customers': customers,
             'action': '新增',
             'clientType': {1: '政府', 2: '企業', 3: '個人'}
         }
-
         # cc = models.Customers.query().filter(models.Customers.clientName == '4').fetch()
-
         logging.info(customers)
-
         return render(request, "customers.html", data)
 
-    elif request.method == 'POST':
-        # logging.info(request.POST)
 
+# 客戶資料新增
+def customersAdd(request):
+    user = users.get_current_user()
+
+    if request.method == 'GET':
+        data = {
+            'user': user,
+            'action': '新增',
+            'clientType': {1: '政府', 2: '企業', 3: '個人'}
+        }
+        return render(request, "customers/customers-data-handle.html", data)
+
+    else:
         clientName = request.POST['clientName']
         type = int(request.POST['type'])
         clientAddress = request.POST['clientAddress']
@@ -92,6 +97,7 @@ def customers(request):
         return response
 
 
+# 客戶資料刪除
 def customersDelete(request, id):
     if request.method == 'DELETE':
         models.DeleteCustomers(int(id))
@@ -103,6 +109,7 @@ def customersDelete(request, id):
         return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 
+# 客戶資料修改
 def customersModify(request, id):
 
     if request.method == 'GET':
@@ -112,7 +119,7 @@ def customersModify(request, id):
             'action': '修改',
             'clientType': {1: '政府', 2: '企業', 3: '個人'}
         }
-        return render(request, "customers.html", data)
+        return render(request, "customers/customers-data-handle.html", data)
 
     elif request.method == 'POST':
 

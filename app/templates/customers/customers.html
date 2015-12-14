@@ -1,0 +1,153 @@
+{% extends 'base.html' %} {% block title %} X0管理系統-客戶資料 {% endblock%} {% block nav %}
+<li><a class="dropdown-button" href="#!" data-activates="dropdown-customers">資料管理<i class="material-icons right">arrow_drop_down</i></a></li>
+{% endblock%} {% block nav-mobile %}
+<li><a class="dropdown-button" href="#!" data-activates="dropdown-mobile-customers">資料管理<i class="material-icons right">arrow_drop_down</i></a></li>
+{% endblock%} {% block content %}
+<div class="section no-pad-bot" id="index-banner">
+    <div class="container">
+
+        {% if customers %} {% load keyvalue %}
+        <div class="card-panel hoverable">
+            <a href="/customers/add" class="tooltipped" data-position="right" data-delay="50" data-tooltip="新增客戶資料">
+                <i class="material-icons">add</i>
+            </a>
+            <h5>客戶資料-列表</h5>
+            <table class="responsive-table highlight centered">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <!-- <th colspan="1"></th> -->
+                        <th>客戶名稱</th>
+                        <th>客戶類型</th>
+                        <th>客戶地址</th>
+                        <th>客戶電話</th>
+                        <th>建檔人員</th>
+                        <th>建檔時間</th>
+                        <th colspan="2">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in customers %}
+                    <tr id="{{ c.key }}">
+                        <td>{{ forloop.counter }}</td>
+                        <!-- <td>
+                            <a class='dropdown-button btn waves-effect waves-light' href='#' data-activates='action{{ forloop.counter }}'>Action</a>
+                            <ul id='action{{ forloop.counter }}' class='dropdown-content'>
+                                <li>
+                                    <a href="javascript:;" id="{{ c.key }}" class="del">
+                                        <span class="badge"><i class="material-icons">delete</i></span>刪除
+                                    </a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a href="javascript:;" id="{{ c.key }}" class="modify">
+                                        <span class="badge"><i class="material-icons">edit</i></span>修改
+                                    </a>
+                                </li>
+                            </ul>
+                        </td> -->
+                        <td> {{ c.clientName }} </td>
+                        <td>
+                            {{ clientType|get_value_by_key:c.type|default:"未知" }}
+                        </td>
+                        <td> {{ c.clientAddress|default:"N/A" }} </td>
+                        <td> {{ c.clientTel|default:"N/A" }} </td>
+                        <td> {{ c.createOperatorAccount }} </td>
+                        <td> {{ c.createDateTime|date:"Y-m-d H:i" }} </td>
+                        <td>
+                            <a href="javascript:;" id="{{ c.key }}" class="modify tooltipped" data-position="right" data-delay="50" data-tooltip="修改此筆">
+                                <i class="material-icons">edit</i>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="javascript:;" id="{{ c.key }}" class="del tooltipped" data-position="right" data-delay="50" data-tooltip="刪除此筆">
+                                <i class="material-icons red-delete">delete</i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="9">無資料</td>
+                    </tr>
+                </tbody>
+                {% endfor %}
+            </table>
+        </div>
+        {% else %} {% endif %}
+    </div>
+
+    <div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
+        <a class="btn-floating btn-large red">
+            <i class="large material-icons">add</i>
+        </a>
+        <ul>
+            <li><a class="btn-floating red"><i class="material-icons">insert_chart</i></a></li>
+            <li><a class="btn-floating yellow darken-1"><i class="material-icons">format_quote</i></a></li>
+            <li><a class="btn-floating green"><i class="material-icons">publish</i></a></li>
+            <li><a class="btn-floating blue"><i class="material-icons">attach_file</i></a></li>
+        </ul>
+    </div>
+
+</div>
+{% endblock%} {% block javascript %}
+<script src="/pub/js/jquery/plugin/jquery.cookie/jquery.cookie.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('a[class^="del"]').click(function(event) {
+            var _this = $(this);
+            var id = $(this).attr('id');
+            if (id != '') {
+                id = id.split(', ')[1].split(')')[0];
+            }
+
+            var conf = confirm("Delete file ?");
+            if (conf == true) {
+                $.ajax({
+                    url: '/customers/delete/' + id,
+                    type: "DELETE",
+                    dataType: 'json',
+                    beforeSend: function(xhr, settings) {
+                        //  _this.hide();
+                        if (!csrfSafeMethod(settings.type)) {
+                            xhr.setRequestHeader("X-CSRFToken", $.cookie('csrftoken'));
+                        }
+                    },
+                    error: function(error) {
+                        alert(error.status + ': ' + error.statusText);
+                        //  _this.show();
+                    },
+                    success: function(response) {
+                        if (response.result == 1) {
+                            _this.parent().parent('tr').fadeOut(500);
+                        }
+                        console.log(response.result);
+                    }
+                });
+            }
+        });
+
+        $('a[class^="modify"]').each(function() {
+            var id = $(this).attr('id');
+            id = id.split(', ')[1].split(')')[0];
+            $(this).attr('href', '/customers/modify/' + id);
+        });
+
+        // $('.dropdown-button').dropdown({
+        //     inDuration: 300,
+        //     outDuration: 225,
+        //     // constrain_width: false, // Does not change width of dropdown to that of the activator
+        //     hover: true, // Activate on hover
+        //     // gutter: 0, // Spacing from edge
+        //     belowOrigin: false, // Displays dropdown below the button
+        //     // alignment: 'left' // Displays dropdown with edge aligned to the left of button
+        // });
+
+    });
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+</script>
+{% endblock %}
