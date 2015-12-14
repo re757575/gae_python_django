@@ -1,4 +1,5 @@
 # Django settings for gae_python_web project.
+from pytz.gae import pytz
 
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG

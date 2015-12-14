@@ -6,7 +6,7 @@
 <div class="section no-pad-bot" id="index-banner">
     <div class="container">
 
-        {% if customers %} {% load keyvalue %}
+        {% if customers %} {% load keyvalue %} {% load timestamp_to_date %}
         <div class="card-panel hoverable">
             <a href="/customers/add" class="tooltipped" data-position="right" data-delay="50" data-tooltip="新增客戶資料">
                 <i class="material-icons">add</i>
@@ -16,6 +16,7 @@
                 <thead>
                     <tr>
                         <th>#</th>
+
                         <!-- <th colspan="1"></th> -->
                         <th>客戶名稱</th>
                         <th>客戶類型</th>
@@ -53,7 +54,7 @@
                         <td> {{ c.clientAddress|default:"N/A" }} </td>
                         <td> {{ c.clientTel|default:"N/A" }} </td>
                         <td> {{ c.createOperatorAccount }} </td>
-                        <td> {{ c.createDateTime|date:"Y-m-d H:i" }} </td>
+                        <td> {{ c.createTimeStamp|utc_to_loacltz|date:"Y-m-d H:i" }} </td>
                         <td>
                             <a href="javascript:;" id="{{ c.key }}" class="modify tooltipped" data-position="right" data-delay="50" data-tooltip="修改此筆">
                                 <i class="material-icons">edit</i>
