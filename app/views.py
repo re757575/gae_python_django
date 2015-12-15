@@ -60,7 +60,7 @@ def customers(request):
 
         # 查詢值
         if 'q' in request.GET:
-            q = request.GET['q']
+            q = request.GET['q'].encode('utf-8').strip()
 
         # 查詢條件
         if 'query_type' in request.GET:
