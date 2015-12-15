@@ -12,6 +12,41 @@
                 <i class="material-icons">add</i>
             </a>
             <h5>客戶資料-列表</h5>
+
+            <form class="col s12" action="" method="get">
+                <div class="row">
+                    <div class="input-field col s2">
+                        <select id="query_type" name="query_type">
+                            <option value="" disabled selected>請選擇</option>
+                            <option value="clientName">客戶名稱</option>
+                            <option value="clientAddress">客戶地址</option>
+                            <option value="clientTel">客戶電話</option>
+                        </select>
+                        <label>搜尋條件</label>
+                    </div>
+                    <div class="input-field col s2">
+                        <select id="query_client_type" name="query_client_type">
+                            <option value="" disabled selected>請選擇</option>
+                            {% for key, value in clientType.items %}
+                            <option value="{{ key }}">{{ value }}</option>
+                            {% endfor %}
+                        </select>
+                        <label>客戶類型</label>
+                    </div>
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix">query</i>
+                        <input id="q" name="q" type="text" class="validate">
+                        <label for="search"><i class="material-icons">search</i></label>
+                    </div>
+                    <div class="input-field col s2">
+                        <button class="btn-flat waves-effect waves-light" type="submit" name="action">
+                            <i class="material-icons right">send</i>
+                        </button>
+                    </div>
+                </div>
+                {% csrf_token %}
+            </form>
+
             <table class="responsive-table highlight centered">
                 <thead>
                     <tr>

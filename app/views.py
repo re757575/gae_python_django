@@ -1,8 +1,10 @@
 # coding=utf-8
 
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 from django.template import RequestContext
-from django.shortcuts import render, render_to_response
+from django.shortcuts import render
+from django.shortcuts import render_to_response
 from datetime import datetime
 import random
 import logging
@@ -53,7 +55,28 @@ def customers(request):
     user = users.get_current_user()
 
     if request.method == 'GET':
-        customers = models.AllCustomers()
+
+        q = query_type = query_client_type = None
+
+        # 查詢值
+        if 'q' in request.GET:
+            q = request.GET['q']
+
+        # 查詢條件
+        if 'query_type' in request.GET:
+            query_type = request.GET['query_type']
+
+        # 客戶類型
+        if 'query_client_type' in request.GET:
+            query_client_type = request.GET['query_client_type']
+
+        params = {
+            'q': q,
+            'query_type': query_type,
+            'customers_type': query_client_type
+        }
+        customers = models.AllCustomers(params)
+
         data = {
             'user': user,
             'customers': customers,
