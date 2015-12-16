@@ -34,6 +34,12 @@ def AllCustomers(param={}):
             customers = customers.filter(
                 Customers._properties['type'] == int(param['customers_type']))
 
+        # 排序
+        if 'order_by' in param and param['order_by']:
+            customers = customers.order(Customers._properties['order_by'])
+        else:
+            customers = customers.order(-Customers.createTimeStamp)
+
     return customers
 
 
