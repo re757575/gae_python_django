@@ -8,15 +8,19 @@
 
         {% load keyvalue %} {% load timestamp_to_date %}
         <div class="card-panel hoverable">
-            <a href="/customers/add" class="tooltipped" data-position="right" data-delay="50" data-tooltip="新增客戶資料">
+
+            <a href="/customers/add" class="tooltipped waves-effect waves-circle waves-light btn-floating secondary-content" data-position="right" data-delay="50" data-tooltip="新增客戶資料">
                 <i class="material-icons">add</i>
             </a>
+
             <h5>客戶資料-列表</h5>
 
             <form id="queryForm" class="col s12" action="" method="get">
                 <div class="row">
                     <div id="resetForm" class="input-field col s0">
-                        <a href="javascript:;">清除</a>
+                        <div class="waves-effect waves-circle">
+                            <a href="javascript:;">清除</a>
+                        </div>
                     </div>
                     <div class="input-field col s2">
                         <select id="query_type" name="query_type">
@@ -74,14 +78,18 @@
                         <td> {{ c.createOperatorAccount }} </td>
                         <td> {{ c.createTimeStamp|utc_to_loacltz|date:"Y-m-d H:i" }} </td>
                         <td>
-                            <a href="javascript:;" id="{{ c.key }}" class="modify tooltipped" data-position="right" data-delay="50" data-tooltip="修改此筆">
-                                <i class="material-icons">edit</i>
-                            </a>
+                            <div class="waves-effect waves-teal waves-circle">
+                                <a href="javascript:;" id="{{ c.key }}" class="modify tooltipped" data-position="right" data-delay="50" data-tooltip="修改此筆">
+                                    <i class="material-icons">edit</i>
+                                </a>
+                            </div>
                         </td>
                         <td>
-                            <a href="javascript:;" id="{{ c.key }}" class="del tooltipped" data-position="right" data-delay="50" data-tooltip="刪除此筆">
-                                <i class="material-icons red-delete">delete</i>
-                            </a>
+                            <div class="waves-effect waves-red waves-circle">
+                                <a href="javascript:;" id="{{ c.key }}" class="del tooltipped" data-position="right" data-delay="50" data-tooltip="刪除此筆">
+                                    <i class="material-icons red-delete">delete</i>
+                                </a>
+                            </div>
                         </td>
                     </tr>
                     {% empty %}

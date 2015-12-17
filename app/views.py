@@ -91,7 +91,7 @@ def customers(request):
             previous = '<li class="waves-effect"><a href="/customers?currentPage=' + str(currentPage - 1) + '&q=' + str(q) + '&query_type=' + str(
                 query_type) + '&query_client_type=' + query_client_type + '"><i class="material-icons">chevron_left</i></a></li>'
         else:
-            previous = '<li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>'
+            previous = '<li class="disabled"><a href="javascript:;"><i class="material-icons">chevron_left</i></a></li>'
 
         # 頁數
         page = ''
@@ -109,7 +109,7 @@ def customers(request):
 
         # next
         if currentPage >= total_page:
-            next = '<li class="disabled"><a href="#!"><i class="material-icons">chevron_right</i></a></li>'
+            next = '<li class="disabled"><a href="javascript:;"><i class="material-icons">chevron_right</i></a></li>'
         else:
             next = '<li class="waves-effect"><a href="/customers?currentPage=' + str(currentPage + 1) + '&q=' + str(q) + '&query_type=' + str(
                 query_type) + '&query_client_type=' + query_client_type + '"><i class="material-icons">chevron_right</i></a></li>'
