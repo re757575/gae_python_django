@@ -120,7 +120,7 @@ def customers(request):
             </ul>
         '''
 
-        data = {
+        resp_data = {
             'user': user,
             'customers': customers['result'],
             'action': '新增',
@@ -129,7 +129,7 @@ def customers(request):
             'customers_count': total
         }
 
-        return render(request, "customers.html", data)
+        return render(request, "customers.html", locals())
 
 
 # 客戶資料新增
@@ -137,12 +137,12 @@ def customers_add(request):
     user = users.get_current_user()
 
     if request.method == 'GET':
-        data = {
+        resp_data = {
             'user': user,
             'action': '新增',
             'clientType': {1: '政府', 2: '企業', 3: '個人'}
         }
-        return render(request, "customers/customers-data-handle.html", data)
+        return render(request, "customers/customers-data-handle.html", locals())
 
     else:
         clientName = request.POST['clientName']
@@ -154,12 +154,12 @@ def customers_add(request):
         Customers._insert_customers(
             type, clientName, clientAddress, clientTel, '備註...', user, createTimeStamp)
 
-        respData = {
+        resp_data = {
             'title': '客戶資料',
             'message': '新增成功。 (三秒後自動返回)'
         }
 
-        response = render_to_response('success.html', respData)
+        response = render_to_response('success.html', locals())
         response['refresh'] = '3;URL=/customers/'
         return response
 
@@ -181,12 +181,12 @@ def customers_modify(request, id):
 
     if request.method == 'GET':
         customer = ndb.Key('Customers', int(id)).get()
-        data = {
+        resp_data = {
             'customer': customer,
             'action': '修改',
             'clientType': {1: '政府', 2: '企業', 3: '個人'}
         }
-        return render(request, "customers/customers-data-handle.html", data)
+        return render(request, "customers/customers-data-handle.html", locals())
 
     elif request.method == 'POST':
 
@@ -204,11 +204,11 @@ def customers_modify(request, id):
         customer.clientTel = clientTel
         customer.put()
 
-        respData = {
+        resp_data = {
             'title': '客戶資料',
             'message': '修改成功。 (三秒後自動返回)'
         }
 
-        response = render_to_response('success.html', respData)
+        response = render_to_response('success.html', locals())
         response['refresh'] = '3;URL=/customers/'
         return response

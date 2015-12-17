@@ -13,11 +13,14 @@
             </a>
             <h5>客戶資料-列表</h5>
 
-            <form class="col s12" action="" method="get">
+            <form id="queryForm" class="col s12" action="" method="get">
                 <div class="row">
+                    <div id="resetForm" class="input-field col s0">
+                        <a href="javascript:;">清除</a>
+                    </div>
                     <div class="input-field col s2">
                         <select id="query_type" name="query_type">
-                            <option value="" disabled selected>請選擇</option>
+                            <option value="">請選擇</option>
                             <option value="clientName">客戶名稱</option>
                             <option value="clientAddress">客戶地址</option>
                             <option value="clientTel">客戶電話</option>
@@ -26,16 +29,16 @@
                     </div>
                     <div class="input-field col s2">
                         <select id="query_client_type" name="query_client_type">
-                            <option value="" disabled selected>請選擇</option>
-                            {% for key, value in clientType.items %}
+                            <option value="">請選擇</option>
+                            {% for key, value in resp_data.clientType.items %}
                             <option value="{{ key }}">{{ value }}</option>
                             {% endfor %}
                         </select>
                         <label>客戶類型</label>
                     </div>
-                    <div class="input-field col s6">
+                    <div class="input-field col s5">
                         <i class="material-icons prefix">query</i>
-                        <input id="q" name="q" type="text" class="validate">
+                        <input id="q" name="q" type="text">
                         <label for="search"><i class="material-icons">search</i></label>
                     </div>
                     <div class="input-field col s2">
@@ -61,11 +64,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% if customers %} {% for c in customers %}
+                    {% if customers %} {% for c in resp_data.customers %}
                     <tr id="{{ c.key }}">
                         <td> {{ forloop.counter }} </td>
                         <td> {{ c.clientName }} </td>
-                        <td> {{ clientType|get_value_by_key:c.type|default:"未知" }} </td>
+                        <td> {{ resp_data.clientType|get_value_by_key:c.type|default:"未知" }} </td>
                         <td> {{ c.clientAddress|default:"N/A" }} </td>
                         <td> {{ c.clientTel|default:"N/A" }} </td>
                         <td> {{ c.createOperatorAccount }} </td>
@@ -91,12 +94,11 @@
                 {% endif %}
             </table>
 
-            <br><div class="chip">符合搜尋條件的資料: {{ customers_count }} 筆</div>
+            <br>
+            <div class="chip">符合搜尋條件的資料: {{ resp_data.customers_count }} 筆</div>
 
             <!-- pagination -->
-            {% if customers %}
-                {{ pager|safe }}
-            {% endif %}
+            {% if resp_data.customers %} {{ resp_data.pager|safe }} {% endif %}
         </div>
     </div>
 
@@ -116,7 +118,28 @@
 {% endblock%} {% block javascript %}
 <script src="/pub/js/jquery/plugin/jquery.cookie/jquery.cookie.min.js"></script>
 <script>
+    var _init = (function(form) {
+        // 保留查詢選項
+        $('#q').attr('value', '{{ q }}');
+
+        $("#query_type option").filter(function() {
+            return $(this).val() == '{{ query_type }}';
+        }).prop('selected', true);
+
+        $("#query_client_type option").filter(function() {
+            return $(this).val() == '{{ query_client_type }}';
+        }).prop('selected', true);
+    })();
+
+    // 查詢選項
+    var _resetForm = (function(form) {
+        $('#q').val('');
+        $('#query_type').parent('div').find('ul li:first').click();
+        $('#query_client_type').parent('div').find('ul li:first').click()
+    });
+
     $(document).ready(function() {
+
         $('a[class^="del"]').click(function(event) {
             var _this = $(this);
             var id = $(this).attr('id');
@@ -156,15 +179,9 @@
             $(this).attr('href', '/customers/modify/' + id);
         });
 
-        // $('.dropdown-button').dropdown({
-        //     inDuration: 300,
-        //     outDuration: 225,
-        //     // constrain_width: false, // Does not change width of dropdown to that of the activator
-        //     hover: true, // Activate on hover
-        //     // gutter: 0, // Spacing from edge
-        //     belowOrigin: false, // Displays dropdown below the button
-        //     // alignment: 'left' // Displays dropdown with edge aligned to the left of button
-        // });
+        $('#resetForm').click(function(event) {
+            _resetForm();
+        });
 
     });
 
