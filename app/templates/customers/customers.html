@@ -6,7 +6,7 @@
 <div class="section no-pad-bot" id="index-banner">
     <div class="container">
 
-        {% if customers %} {% load keyvalue %} {% load timestamp_to_date %}
+        {% load keyvalue %} {% load timestamp_to_date %}
         <div class="card-panel hoverable">
             <a href="/customers/add" class="tooltipped" data-position="right" data-delay="50" data-tooltip="新增客戶資料">
                 <i class="material-icons">add</i>
@@ -51,8 +51,6 @@
                 <thead>
                     <tr>
                         <th>#</th>
-
-                        <!-- <th colspan="1"></th> -->
                         <th>客戶名稱</th>
                         <th>客戶類型</th>
                         <th>客戶地址</th>
@@ -63,29 +61,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for c in customers %}
+                    {% if customers %} {% for c in customers %}
                     <tr id="{{ c.key }}">
-                        <td>{{ forloop.counter }}</td>
-                        <!-- <td>
-                            <a class='dropdown-button btn waves-effect waves-light' href='#' data-activates='action{{ forloop.counter }}'>Action</a>
-                            <ul id='action{{ forloop.counter }}' class='dropdown-content'>
-                                <li>
-                                    <a href="javascript:;" id="{{ c.key }}" class="del">
-                                        <span class="badge"><i class="material-icons">delete</i></span>刪除
-                                    </a>
-                                </li>
-                                <li class="divider"></li>
-                                <li>
-                                    <a href="javascript:;" id="{{ c.key }}" class="modify">
-                                        <span class="badge"><i class="material-icons">edit</i></span>修改
-                                    </a>
-                                </li>
-                            </ul>
-                        </td> -->
+                        <td> {{ forloop.counter }} </td>
                         <td> {{ c.clientName }} </td>
-                        <td>
-                            {{ clientType|get_value_by_key:c.type|default:"未知" }}
-                        </td>
+                        <td> {{ clientType|get_value_by_key:c.type|default:"未知" }} </td>
                         <td> {{ c.clientAddress|default:"N/A" }} </td>
                         <td> {{ c.clientTel|default:"N/A" }} </td>
                         <td> {{ c.createOperatorAccount }} </td>
@@ -106,10 +86,18 @@
                         <td colspan="9">無資料</td>
                     </tr>
                 </tbody>
-                {% endfor %}
+                {% endfor %} {% else %}
+                <td colspan="9">無資料</td>
+                {% endif %}
             </table>
+
+            <br><div class="chip">符合搜尋條件的資料: {{ customers_count }} 筆</div>
+
+            <!-- pagination -->
+            {% if customers %}
+                {{ pager|safe }}
+            {% endif %}
         </div>
-        {% else %} {% endif %}
     </div>
 
     <div class="fixed-action-btn" style="bottom: 45px; right: 24px;">

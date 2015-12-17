@@ -12,6 +12,45 @@ indexes:
 
 - kind: Customers
   properties:
+  - name: clientAddress
+  - name: createTimeStamp
+    direction: desc
+
+- kind: Customers
+  properties:
+  - name: clientAddress
+  - name: type
+  - name: createTimeStamp
+    direction: desc
+
+- kind: Customers
+  properties:
   - name: clientName
+  - name: createTimeStamp
+    direction: desc
+
+- kind: Customers
+  properties:
+  - name: clientName
+  - name: type
+  - name: createTimeStamp
+    direction: desc
+
+- kind: Customers
+  properties:
+  - name: clientTel
+  - name: createTimeStamp
+    direction: desc
+
+- kind: Customers
+  properties:
+  - name: clientTel
+  - name: type
+  - name: createTimeStamp
+    direction: desc
+
+- kind: Customers
+  properties:
+  - name: type
   - name: createTimeStamp
     direction: desc

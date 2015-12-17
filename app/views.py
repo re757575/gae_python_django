@@ -8,12 +8,13 @@ from django.shortcuts import render_to_response
 from datetime import datetime
 import random
 import logging
-import models
 import time
 import json
+import math
 
 from google.appengine.api import users
 from google.appengine.ext import ndb
+from models import Customers
 
 
 def error404(request):
@@ -32,13 +33,6 @@ def error500(request):
 
 def home(request):
 
-    # if request.method == 'GET':
-    #     logging.info('GET')
-    #     if 'section' in request.GET and request.GET['section'] is not None and request.GET['section'] != '':
-    #         logging.info(request.GET['section'])
-    # elif request.method == 'POST':
-    #     logging.info('POST')
-
     user = users.get_current_user()
     if user:
         user = {
@@ -56,7 +50,7 @@ def customers(request):
 
     if request.method == 'GET':
 
-        q = query_type = query_client_type = None
+        q = query_type = query_client_type = ''
 
         # 查詢值
         if 'q' in request.GET:
@@ -70,26 +64,76 @@ def customers(request):
         if 'query_client_type' in request.GET:
             query_client_type = request.GET['query_client_type']
 
+        # 目前頁數
+        if 'currentPage' in request.GET:
+            currentPage = int(request.GET['currentPage'])
+        else:
+            currentPage = 1
+
+        # 分頁設定
+        Customers.page = currentPage
+        Customers.limit = 10
+
         params = {
             'q': q,
             'query_type': query_type,
-            'customers_type': query_client_type
+            'customers_type': query_client_type,
         }
-        customers = models.AllCustomers(params)
+        customers = Customers._get_all_customers(params)
+
+        # 搜尋結果筆數
+        total = customers['total']
+        # 總頁數
+        total_page = int(math.ceil(float(total) / float(Customers.limit)))
+
+        # previous
+        if currentPage > 1:
+            previous = '<li class="waves-effect"><a href="/customers?currentPage=' + str(currentPage - 1) + '&q=' + str(q) + '&query_type=' + str(
+                query_type) + '&query_client_type=' + query_client_type + '"><i class="material-icons">chevron_left</i></a></li>'
+        else:
+            previous = '<li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>'
+
+        # 頁數
+        page = ''
+        page_conut = 1
+        while page_conut <= total_page:
+            if page_conut == currentPage:
+                page += '<li class="active"><a href="/customers?currentPage=' + str(page_conut) + '&q=' + str(q) + '&query_type=' + str(
+                    query_type) + '&query_client_type=' + query_client_type + '">' + str(page_conut) + '</a></li>\n'
+            else:
+                page += '<li class="waves-effect"><a href="/customers?currentPage=' + str(page_conut) + '&q=' + str(
+                    q) + '&query_type=' + str(query_type) + '&query_client_type=' + query_client_type + '">' + str(page_conut) + '</a></li>\n'
+
+            page_conut += 1
+            pass
+
+        # next
+        if currentPage >= total_page:
+            next = '<li class="disabled"><a href="#!"><i class="material-icons">chevron_right</i></a></li>'
+        else:
+            next = '<li class="waves-effect"><a href="/customers?currentPage=' + str(currentPage + 1) + '&q=' + str(q) + '&query_type=' + str(
+                query_type) + '&query_client_type=' + query_client_type + '"><i class="material-icons">chevron_right</i></a></li>'
+
+        pager = '''
+            <ul class="pagination">
+                ''' + previous + page + next + '''
+            </ul>
+        '''
 
         data = {
             'user': user,
-            'customers': customers,
+            'customers': customers['result'],
             'action': '新增',
-            'clientType': {1: '政府', 2: '企業', 3: '個人'}
+            'clientType': {1: '政府', 2: '企業', 3: '個人'},
+            'pager': pager,
+            'customers_count': total
         }
-        # cc = models.Customers.query().filter(models.Customers.clientName == '4').fetch()
-        logging.info(customers)
+
         return render(request, "customers.html", data)
 
 
 # 客戶資料新增
-def customersAdd(request):
+def customers_add(request):
     user = users.get_current_user()
 
     if request.method == 'GET':
@@ -107,7 +151,7 @@ def customersAdd(request):
         clientTel = request.POST['clientTel']
 
         createTimeStamp = time.mktime(datetime.now().timetuple())
-        models.InsertCustomers(
+        Customers._insert_customers(
             type, clientName, clientAddress, clientTel, '備註...', user, createTimeStamp)
 
         respData = {
@@ -121,9 +165,9 @@ def customersAdd(request):
 
 
 # 客戶資料刪除
-def customersDelete(request, id):
+def customers_delete(request, id):
     if request.method == 'DELETE':
-        models.DeleteCustomers(int(id))
+        Customers._delete_customers(int(id))
 
         response_data = {}
         response_data['result'] = 1
@@ -133,7 +177,7 @@ def customersDelete(request, id):
 
 
 # 客戶資料修改
-def customersModify(request, id):
+def customers_modify(request, id):
 
     if request.method == 'GET':
         customer = ndb.Key('Customers', int(id)).get()
@@ -151,7 +195,7 @@ def customersModify(request, id):
         clientAddress = request.POST['clientAddress']
         clientTel = request.POST['clientTel']
 
-        _c = models.Customers()
+        _c = Customers()
         customer = _c.get_by_id(int(id))
 
         customer.clientName = clientName
