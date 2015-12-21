@@ -32,9 +32,9 @@ class Customers(ndb.Model):
                 customers = customers.filter(
                     Customers._properties[param['query_type']] == str(param['q']))
 
-            if 'customers_type' in param and param['customers_type']:
+            if 'client_type' in param and param['client_type']:
                 customers = customers.filter(
-                    Customers._properties['type'] == int(param['customers_type']))
+                    Customers._properties['type'] == int(param['client_type']))
 
             # 排序
             if 'order_by' in param and param['order_by']:

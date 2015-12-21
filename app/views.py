@@ -17,7 +17,7 @@ from google.appengine.api import users
 from google.appengine.ext import ndb
 
 from models import Customers
-
+from lib.helper import helper_pager
 
 def error404(request):
     response = render_to_response(
@@ -48,11 +48,12 @@ def home(request):
 
 # 客戶資料列表
 def customers(request):
+
     user = users.get_current_user()
 
     if request.method == 'GET':
 
-        q = query_type = query_client_type = ''
+        q = query_type = client_type = ''
 
         # 查詢值
         if 'q' in request.GET:
@@ -63,64 +64,31 @@ def customers(request):
             query_type = request.GET['query_type']
 
         # 客戶類型
-        if 'query_client_type' in request.GET:
-            query_client_type = request.GET['query_client_type']
+        if 'client_type' in request.GET:
+            client_type = request.GET['client_type']
 
         # 目前頁數
-        if 'currentPage' in request.GET:
-            currentPage = int(request.GET['currentPage'])
+        if 'current_page' in request.GET:
+            current_page = int(request.GET['current_page'])
         else:
-            currentPage = 1
+            current_page = 1
 
         # 分頁設定
-        Customers.page = currentPage
+        Customers.page = current_page
         Customers.limit = 10
 
         params = {
             'q': q,
             'query_type': query_type,
-            'customers_type': query_client_type,
+            'client_type': client_type
         }
         customers = Customers._get_all_customers(params)
 
         # 搜尋結果筆數
         total = customers['total']
-        # 總頁數
-        total_page = int(math.ceil(float(total) / float(Customers.limit)))
 
-        # previous
-        if currentPage > 1:
-            previous = '<li class="waves-effect"><a href="/customers?currentPage=' + str(currentPage - 1) + '&q=' + str(q) + '&query_type=' + str(
-                query_type) + '&query_client_type=' + query_client_type + '"><i class="material-icons">chevron_left</i></a></li>'
-        else:
-            previous = '<li class="disabled"><a href="javascript:;"><i class="material-icons">chevron_left</i></a></li>'
-
-        # 頁數
-        page = ''
-        page_conut = 1
-        while page_conut <= total_page:
-            if page_conut == currentPage:
-                page += '<li class="active"><a href="/customers?currentPage=' + str(page_conut) + '&q=' + str(q) + '&query_type=' + str(
-                    query_type) + '&query_client_type=' + query_client_type + '">' + str(page_conut) + '</a></li>\n'
-            else:
-                page += '<li class="waves-effect"><a href="/customers?currentPage=' + str(page_conut) + '&q=' + str(
-                    q) + '&query_type=' + str(query_type) + '&query_client_type=' + query_client_type + '">' + str(page_conut) + '</a></li>\n'
-
-            page_conut += 1
-            pass
-
-        # next
-        if currentPage >= total_page:
-            next = '<li class="disabled"><a href="javascript:;"><i class="material-icons">chevron_right</i></a></li>'
-        else:
-            next = '<li class="waves-effect"><a href="/customers?currentPage=' + str(currentPage + 1) + '&q=' + str(q) + '&query_type=' + str(
-                query_type) + '&query_client_type=' + query_client_type + '"><i class="material-icons">chevron_right</i></a></li>'
-
-        pager = '''
-            <ul class="pagination">
-                ''' + previous + page + next + '''
-            </ul>
-        '''
+        # 取得分頁
+        pager = helper_pager(current_page, total, Customers.limit, params)
 
         resp_data = {
             'user': user,

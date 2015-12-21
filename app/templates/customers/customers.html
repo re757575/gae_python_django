@@ -32,7 +32,7 @@
                         <label>搜尋條件</label>
                     </div>
                     <div class="input-field col s2">
-                        <select id="query_client_type" name="query_client_type">
+                        <select id="client_type" name="client_type">
                             <option value="">請選擇</option>
                             {% for key, value in resp_data.clientType.items %}
                             <option value="{{ key }}">{{ value }}</option>
@@ -134,8 +134,8 @@
             return $(this).val() == '{{ query_type }}';
         }).prop('selected', true);
 
-        $("#query_client_type option").filter(function() {
-            return $(this).val() == '{{ query_client_type }}';
+        $("#client_type option").filter(function() {
+            return $(this).val() == '{{ client_type }}';
         }).prop('selected', true);
     })();
 
@@ -143,7 +143,7 @@
     var _resetForm = (function(form) {
         $('#q').val('');
         $('#query_type').parent('div').find('ul li:first').click();
-        $('#query_client_type').parent('div').find('ul li:first').click()
+        $('#client_type').parent('div').find('ul li:first').click()
     });
 
     $(document).ready(function() {
