@@ -173,7 +173,7 @@
                     },
                     success: function(response) {
                         if (response.result == 1) {
-                            _this.parent().parent('tr').fadeOut(500);
+                            _this.parent().parent().parent('tr').fadeOut(500);
                         }
                         console.log(response.result);
                     }
