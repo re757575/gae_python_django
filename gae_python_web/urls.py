@@ -21,4 +21,5 @@ urlpatterns = patterns('',
     url(r'^customers/add/', 'app.views.customers_add'),
     url(r'^customers/delete/(?P<id>[\w]{16})/$', 'app.views.customers_delete'),
     url(r'^customers/modify/(?P<id>[\w]{16})$', 'app.views.customers_modify'),
+    url(r'^create/$', 'app.views.create'),
 )

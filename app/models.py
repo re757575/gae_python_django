@@ -1,7 +1,7 @@
 # coding=utf-8
 
 from google.appengine.ext import ndb
-from google.appengine.datastore.datastore_query import Cursor
+from google.appengine.api import memcache
 import logging
 
 
@@ -43,10 +43,18 @@ class Customers(ndb.Model):
                 customers = customers.order(-Customers.createTimeStamp)
 
             total = customers.count()
-            customers = customers.fetch(
-                cls.limit, offset=(cls.page - 1) * cls.limit)
 
-        return {'result': customers, 'total': total}
+            """ 使用 cache """
+            customers = customers.fetch(
+                cls.limit, offset=(cls.page - 1) * cls.limit, keys_only=True, use_cache=True)
+            result = get_data_from_cache(customers, 'customers_')
+
+            """ 不使用 cache """
+            # customers = customers.fetch(
+            #     cls.limit, offset=(cls.page - 1) * cls.limit, use_cache=False)
+            # result = customers
+
+        return {'result': result, 'total': total}
 
     # 更新客戶資料 DOTO:需修改成動態參數
     @classmethod
@@ -70,3 +78,39 @@ class Customers(ndb.Model):
     def _delete_customers(cls, id):
         key = ndb.Key(Customers, id)
         key.delete()
+
+
+""" 共用 function """
+
+# 從 cache 取得資料
+def get_data_from_cache(entity, key_prefix):
+    tk = []
+    for k in entity:
+        tk.append(str(k.urlsafe()))
+
+    logging.info(tk)
+
+    # get memcache: results
+    cache_results = memcache.get_multi(
+        keys=tk, key_prefix=key_prefix)
+
+    result = []
+    memcache_to_add = {}
+    for wanted in tk:
+        if not any(r == wanted for r in cache_results):
+            # 沒有 cache
+            logging.info('not found')
+            memcache_to_add[wanted] = ndb.Key(urlsafe=wanted).get()
+            result.append(memcache_to_add[wanted])
+        else:
+            # 有
+            logging.info('found')
+            result.append(cache_results[wanted])
+
+    logging.info('memcache(s) to add: ' + str(len(memcache_to_add)))
+
+    if len(memcache_to_add) > 0:
+        memcache.add_multi(
+            memcache_to_add, key_prefix=key_prefix, time=3600)
+
+    return result

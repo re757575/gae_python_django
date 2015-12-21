@@ -5,8 +5,9 @@ from django.http import HttpResponseRedirect
 from django.template import RequestContext
 from django.shortcuts import render
 from django.shortcuts import render_to_response
+
 from datetime import datetime
-import random
+from random import randint
 import logging
 import time
 import json
@@ -14,6 +15,7 @@ import math
 
 from google.appengine.api import users
 from google.appengine.ext import ndb
+
 from models import Customers
 
 
@@ -212,3 +214,14 @@ def customers_modify(request, id):
         response = render_to_response('success.html', locals())
         response['refresh'] = '3;URL=/customers/'
         return response
+
+
+# 產生資料
+def create(request):
+    user = users.get_current_user()
+    for i in range(100):
+        createTimeStamp = time.mktime(datetime.now().timetuple())
+        Customers._insert_customers(
+            randint(1, 3), 'Alex', '123', '0975', '備註...', user, createTimeStamp)
+
+    return HttpResponse('Done!!!')
