@@ -162,18 +162,19 @@
                     type: "DELETE",
                     dataType: 'json',
                     beforeSend: function(xhr, settings) {
-                        //  _this.hide();
                         if (!csrfSafeMethod(settings.type)) {
                             xhr.setRequestHeader("X-CSRFToken", $.cookie('csrftoken'));
                         }
                     },
                     error: function(error) {
                         alert(error.status + ': ' + error.statusText);
-                        //  _this.show();
                     },
                     success: function(response) {
                         if (response.result == 1) {
-                            _this.parent().parent().parent('tr').fadeOut(500);
+                            var _tr = _this.parent().parent().parent('tr');
+                            _tr.fadeOut(500, function() {
+                                Materialize.toast('客戶資料已刪除', 2500, '', function(){});
+                            });
                         }
                         console.log(response.result);
                     }
