@@ -14,9 +14,8 @@ def helper_pager(current_page, total, limit, params):
 
     # previous
     if current_page > 1:
-        previous = '<li class="waves-effect"><a href="/customers?current_page=' + \
-            str(current_page - 1) + query_params + \
-            '"><i class="material-icons">chevron_left</i></a></li>'
+        previous = '<li class="waves-effect"><a href="/customers?current_page={page}{params}"><i class="material-icons">chevron_left</i></a></li>\n'.format(
+            page=(current_page - 1), params=query_params)
     else:
         previous = '<li class="disabled"><a href="javascript:;"><i class="material-icons">chevron_left</i></a></li>'
 
@@ -34,41 +33,34 @@ def helper_pager(current_page, total, limit, params):
         for page_conut in range(1, total_page + 1, 1):
             if page_conut in page_range:
                 if page_conut == 1 and (current_page - step) > 1 and (current_page - step - 1) != 1:
-                    page += '<li class="waves-effect"><a href="/customers?current_page=' + \
-                        str(page_conut) + query_params + '">' + \
-                        str(page_conut) + '</a></li>\n'
+                    page += '<li class="waves-effect"><a href="/customers?current_page={page}{params}">{page}</a></li>\n'.format(
+                        page=page_conut, params=query_params)
                     page += '<li class="disabled"><a href="javascript:;">...</a></li>\n'
                 elif page_conut == current_page:
-                    page += '<li class="active"><a href="/customers?current_page=' + \
-                        str(page_conut) + query_params + '">' + \
-                        str(page_conut) + '</a></li>\n'
+                    page += '<li class="active"><a href="/customers?current_page={page}{params}">{page}</a></li>\n'.format(
+                        page=page_conut, params=query_params)
                 elif page_conut == total_page and (current_page + step) < total_page and (current_page + step + 1) != total_page:
                     page += '<li class="disabled"><a href="javascript:;">...</a></li>\n'
-                    page += '<li class="waves-effect"><a href="/customers?current_page=' + \
-                        str(page_conut) + query_params + '">' + \
-                        str(page_conut) + '</a></li>\n'
+                    page += '<li class="waves-effect"><a href="/customers?current_page={page}{params}">{page}</a></li>\n'.format(
+                        page=page_conut, params=query_params)
                 else:
-                    page += '<li class="waves-effect"><a href="/customers?current_page=' + \
-                        str(page_conut) + query_params + '">' + \
-                        str(page_conut) + '</a></li>\n'
+                    page += '<li class="waves-effect"><a href="/customers?current_page={page}{params}">{page}</a></li>\n'.format(
+                        page=page_conut, params=query_params)
     else:
         for page_conut in range(1, total_page + 1, 1):
             if page_conut == current_page:
-                page += '<li class="active"><a href="/customers?current_page=' + \
-                    str(page_conut) + query_params + '">' + \
-                    str(page_conut) + '</a></li>\n'
+                page += '<li class="active"><a href="/customers?current_page={page}{params}">{page}</a></li>\n'.format(
+                    page=page_conut, params=query_params)
             else:
-                page += '<li class="waves-effect"><a href="/customers?current_page=' + \
-                    str(page_conut) + query_params + '">' + \
-                    str(page_conut) + '</a></li>\n'
+                page += '<li class="waves-effect"><a href="/customers?current_page={page}{params}">{page}</a></li>\n'.format(
+                    page=page_conut, params=query_params)
 
     # next
     if current_page >= total_page:
         next = '<li class="disabled"><a href="javascript:;"><i class="material-icons">chevron_right</i></a></li>'
     else:
-        next = '<li class="waves-effect"><a href="/customers?current_page=' + \
-            str(current_page + 1) + query_params + \
-            '"><i class="material-icons">chevron_right</i></a></li>'
+        next = '<li class="waves-effect"><a href="/customers?current_page={page}{params}"><i class="material-icons">chevron_right</i></a></li>\n'.format(
+            page=(current_page + 1), params=query_params)
 
     pager = '''
             <ul class="pagination">

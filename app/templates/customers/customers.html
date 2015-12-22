@@ -192,6 +192,9 @@
             _resetForm();
         });
 
+        $('.pagination > li').click(function(event) {
+            location.href = $(this).find('a')[0].getAttribute('href');
+        });
     });
 
     function csrfSafeMethod(method) {
