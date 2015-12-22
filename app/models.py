@@ -79,10 +79,17 @@ class Customers(ndb.Model):
         key = ndb.Key(Customers, id)
         key.delete()
 
+    # 刪除全部客戶資料
+    @classmethod
+    def _delete_all_customers(cls):
+        ndb.delete_multi(cls.query().fetch(keys_only=True))
+
 
 """ 共用 function """
 
 # 從 cache 取得資料
+
+
 def get_data_from_cache(entity, key_prefix):
     tk = []
     for k in entity:

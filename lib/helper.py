@@ -20,21 +20,47 @@ def helper_pager(current_page, total, limit, params):
     else:
         previous = '<li class="disabled"><a href="javascript:;"><i class="material-icons">chevron_left</i></a></li>'
 
-    # 頁數
+    # main page
+    step = 3
     page = ''
-    page_conut = 1
-    while page_conut <= total_page:
-        if page_conut == current_page:
-            page += '<li class="active"><a href="/customers?current_page=' + \
-                str(page_conut) + query_params + '">' + \
-                str(page_conut) + '</a></li>\n'
-        else:
-            page += '<li class="waves-effect"><a href="/customers?current_page=' + \
-                str(page_conut) + query_params + '">' + \
-                str(page_conut) + '</a></li>\n'
+    # 縮短顯示分頁
+    if (total_page > step * 2):
 
-        page_conut += 1
-        pass
+        # 所顯示的頁數編號
+        page_range = [1, total_page]
+        for i in range(current_page - step, current_page + step + 1, 1):
+            page_range.append(i)
+
+        for page_conut in range(1, total_page + 1, 1):
+            if page_conut in page_range:
+                if page_conut == 1 and (current_page - step) > 1 and (current_page - step - 1) != 1:
+                    page += '<li class="waves-effect"><a href="/customers?current_page=' + \
+                        str(page_conut) + query_params + '">' + \
+                        str(page_conut) + '</a></li>\n'
+                    page += '<li class="disabled"><a href="javascript:;">...</a></li>\n'
+                elif page_conut == current_page:
+                    page += '<li class="active"><a href="/customers?current_page=' + \
+                        str(page_conut) + query_params + '">' + \
+                        str(page_conut) + '</a></li>\n'
+                elif page_conut == total_page and (current_page + step) < total_page and (current_page + step + 1) != total_page:
+                    page += '<li class="disabled"><a href="javascript:;">...</a></li>\n'
+                    page += '<li class="waves-effect"><a href="/customers?current_page=' + \
+                        str(page_conut) + query_params + '">' + \
+                        str(page_conut) + '</a></li>\n'
+                else:
+                    page += '<li class="waves-effect"><a href="/customers?current_page=' + \
+                        str(page_conut) + query_params + '">' + \
+                        str(page_conut) + '</a></li>\n'
+    else:
+        for page_conut in range(1, total_page + 1, 1):
+            if page_conut == current_page:
+                page += '<li class="active"><a href="/customers?current_page=' + \
+                    str(page_conut) + query_params + '">' + \
+                    str(page_conut) + '</a></li>\n'
+            else:
+                page += '<li class="waves-effect"><a href="/customers?current_page=' + \
+                    str(page_conut) + query_params + '">' + \
+                    str(page_conut) + '</a></li>\n'
 
     # next
     if current_page >= total_page:
