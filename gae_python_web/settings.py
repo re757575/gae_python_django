@@ -101,6 +101,10 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # custom middleware
+    # 'app.middleware.filter_ip.FilterIPMiddleware',
+    'app.middleware.auth.GoogleAuthMiddleware',
 )
 
 ROOT_URLCONF = 'gae_python_web.urls'

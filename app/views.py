@@ -42,8 +42,6 @@ def home(request):
             'logoutUrl': users.create_logout_url('/')
         }
         return render(request, "index.html", user)
-    else:
-        return HttpResponseRedirect(users.create_login_url('/'))
 
 
 # 客戶資料列表
