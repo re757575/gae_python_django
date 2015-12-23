@@ -18,6 +18,10 @@ handlers:
 - url: /pub/font
   static_dir: pub/font
 
+- url: /admin/.*
+  script: google.appengine.ext.admin.application
+  login: admin
+
 - url: .*
   script: main.application
 

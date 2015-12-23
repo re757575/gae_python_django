@@ -19,6 +19,7 @@ from google.appengine.ext import ndb
 from models import Customers
 from lib.helper import helper_pager
 
+
 def error404(request):
     response = render_to_response(
         '404.html', {}, context_instance=RequestContext(request))
@@ -36,19 +37,26 @@ def error500(request):
 def home(request):
 
     user = users.get_current_user()
-    if user:
-        user = {
-            'userName': user.nickname(),
-            'logoutUrl': users.create_logout_url('/')
-        }
-        return render(request, "index.html", user)
+
+    user = {
+        'admin': True if (users.is_current_user_admin() == True) else False,
+        'userName': user.nickname(),
+        'logoutUrl': users.create_logout_url('/')
+    }
+
+    return render(request, "index.html", locals())
 
 
 # 客戶資料列表
 def customers(request):
 
     user = users.get_current_user()
-    logoutUrl = users.create_login_url('/')
+
+    user = {
+        'admin': True if (users.is_current_user_admin() == True) else False,
+        'userName': user.nickname(),
+        'logoutUrl': users.create_logout_url('/')
+    }
 
     if request.method == 'GET':
 
@@ -103,7 +111,14 @@ def customers(request):
 
 # 客戶資料新增
 def customers_add(request):
+
     user = users.get_current_user()
+
+    user = {
+        'admin': True if (users.is_current_user_admin() == True) else False,
+        'userName': user.nickname(),
+        'logoutUrl': users.create_logout_url('/')
+    }
 
     if request.method == 'GET':
         resp_data = {
@@ -147,6 +162,14 @@ def customers_delete(request, id):
 
 # 客戶資料修改
 def customers_modify(request, id):
+
+    user = users.get_current_user()
+
+    user = {
+        'admin': True if (users.is_current_user_admin() == True) else False,
+        'userName': user.nickname(),
+        'logoutUrl': users.create_logout_url('/')
+    }
 
     if request.method == 'GET':
         customer = ndb.Key('Customers', int(id)).get()
