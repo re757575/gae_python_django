@@ -50,6 +50,7 @@ def home(request):
 def customers(request):
 
     user = users.get_current_user()
+    logoutUrl = users.create_login_url('/')
 
     if request.method == 'GET':
 
