@@ -57,3 +57,7 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# GAE
+bulkloader-log-*
+bulkloader-progress-*

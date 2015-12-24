@@ -28,3 +28,6 @@ handlers:
 libraries:
 - name: django
   version: "1.5"
+
+builtins:
+- remote_api: on
