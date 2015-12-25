@@ -54,6 +54,12 @@ class Customers(ndb.Model):
             #     cls.limit, offset=(cls.page - 1) * cls.limit, use_cache=False)
             # result = customers
 
+            """ 取得對應的 orders """
+            for c in result:
+                customers_orders = c.get_orders.fetch()
+                for co in customers_orders:
+                    logging.info(co)
+
         return {'result': result, 'total': total}
 
     # 更新客戶資料 DOTO:需修改成動態參數
@@ -71,6 +77,20 @@ class Customers(ndb.Model):
         customers = Customers(type=type, clientName=clientName, clientAddress=clientAddress, clientTel=clientTel,
                               note=note, createOperatorAccount=createOperatorAccount, createTimeStamp=createTimeStamp)
         customers.put()
+
+        """ 寫入 orders """
+        # 使用 StructuredProperty
+        # order = Orders(ordersNo='151225001', ordersTitle='PS4*10', customer=customers)
+        # order = Orders(ordersNo='151225001', ordersTitle='PS4*10', customer=[customers,customers])
+        # order.put()
+
+        # 使用 KeyProperty & muitl put
+        orders = Orders(ordersNo='151225001',
+                        ordersTitle='PS4*10', customer=customers.key)
+        orders2 = Orders(ordersNo='151225002',
+                         ordersTitle='PS4*9', customer=customers.key)
+        ndb.put_multi([orders, orders2])
+
         return customers
 
     # 刪除客戶資料
@@ -83,6 +103,21 @@ class Customers(ndb.Model):
     @classmethod
     def _delete_all_customers(cls):
         ndb.delete_multi(cls.query().fetch(keys_only=True))
+
+    # 取得該訂單
+    @property
+    def get_orders(self):
+        return Orders.query(Orders.customer == self.key)
+
+
+class Orders(ndb.Model):
+    ordersNo = ndb.StringProperty(required=True)
+    ordersTitle = ndb.StringProperty(required=True)
+    # 使用 KeyProperty
+    customer = ndb.KeyProperty(kind=Customers, required=True)
+
+    # 使用 StructuredProperty
+    # customer = ndb.StructuredProperty(Customers, repeated=True)
 
 
 """ 共用 function """
