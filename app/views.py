@@ -52,13 +52,13 @@ def customers(request):
 
     user = users.get_current_user()
 
-    user = {
-        'admin': True if (users.is_current_user_admin() == True) else False,
-        'userName': user.nickname(),
-        'logoutUrl': users.create_logout_url('/')
-    }
-
     if request.method == 'GET':
+
+        user = {
+            'admin': True if (users.is_current_user_admin() == True) else False,
+            'userName': user.nickname(),
+            'logoutUrl': users.create_logout_url('/')
+        }
 
         q = query_type = client_type = ''
 
@@ -114,13 +114,14 @@ def customers_add(request):
 
     user = users.get_current_user()
 
-    user = {
-        'admin': True if (users.is_current_user_admin() == True) else False,
-        'userName': user.nickname(),
-        'logoutUrl': users.create_logout_url('/')
-    }
-
     if request.method == 'GET':
+
+        user = {
+            'admin': True if (users.is_current_user_admin() == True) else False,
+            'userName': user.nickname(),
+            'logoutUrl': users.create_logout_url('/')
+        }
+
         resp_data = {
             'user': user,
             'action': '新增',
@@ -165,14 +166,15 @@ def customers_modify(request, id):
 
     user = users.get_current_user()
 
-    user = {
-        'admin': True if (users.is_current_user_admin() == True) else False,
-        'userName': user.nickname(),
-        'logoutUrl': users.create_logout_url('/')
-    }
-
     if request.method == 'GET':
         customer = ndb.Key('Customers', int(id)).get()
+
+        user = {
+            'admin': True if (users.is_current_user_admin() == True) else False,
+            'userName': user.nickname(),
+            'logoutUrl': users.create_logout_url('/')
+        }
+
         resp_data = {
             'customer': customer,
             'action': '修改',
