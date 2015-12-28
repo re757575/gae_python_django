@@ -3,6 +3,7 @@
 from google.appengine.ext import ndb
 from google.appengine.api import memcache
 import logging
+import time
 
 
 class Customers(ndb.Model):
@@ -55,11 +56,15 @@ class Customers(ndb.Model):
             # result = customers
 
             """ 取得對應的 orders """
+            # start_time = time.time()
             for c in result:
                 customers_orders = c.get_orders.fetch()
+                logging.info('orders: {}'.format(len(customers_orders)))
                 for co in customers_orders:
                     logging.info(co)
-
+            #
+            # logging.info("--- %s seconds ---" % (time.time() - start_time))
+            # exit()
         return {'result': result, 'total': total}
 
     # 更新客戶資料 DOTO:需修改成動態參數
@@ -84,12 +89,36 @@ class Customers(ndb.Model):
         # order = Orders(ordersNo='151225001', ordersTitle='PS4*10', customer=[customers,customers])
         # order.put()
 
-        # 使用 KeyProperty & muitl put
+        # muitl put
+        # 使用 KeyProperty (non-ancestor) 建立
         orders = Orders(ordersNo='151225001',
                         ordersTitle='PS4*10', customer=customers.key)
         orders2 = Orders(ordersNo='151225002',
                          ordersTitle='PS4*9', customer=customers.key)
         ndb.put_multi([orders, orders2])
+
+        # 使用 ancestor 建立
+        # orders = Orders(ordersNo='151225001',
+        #                 ordersTitle='PS4*10', parent=customers.key)
+        # orders2 = Orders(ordersNo='151225002',
+        #                  ordersTitle='PS4*9', parent=customers.key)
+        # ndb.put_multi([orders, orders2])
+
+        # test runtime
+        # start_time = time.time()
+        # orders_array = []
+        # for i in range(1000):
+        #     orders = Orders(ordersNo=str(151225001+i),
+        #                     ordersTitle='PS4*10', customer=customers.key)
+        #     # orders = Orders(ordersNo=str(151225001+i),
+        #     #                 ordersTitle='PS4*10', parent=customers.key)
+        #     orders_array.append(orders)
+        #
+        # logging.info(orders_array)
+        # ndb.put_multi(orders_array)
+        #
+        # logging.info("--- %s seconds ---" % (time.time() - start_time))
+        # exit()
 
         return customers
 
@@ -107,13 +136,17 @@ class Customers(ndb.Model):
     # 取得該訂單
     @property
     def get_orders(self):
+        # KeyProperty (non-ancestor)
         return Orders.query(Orders.customer == self.key)
+
+        # ancestor
+        # return Orders.query(ancestor=self.key)
 
 
 class Orders(ndb.Model):
     ordersNo = ndb.StringProperty(required=True)
     ordersTitle = ndb.StringProperty(required=True)
-    # 使用 KeyProperty
+    # 使用 KeyProperty (non-ancestor)
     customer = ndb.KeyProperty(kind=Customers, required=True)
 
     # 使用 StructuredProperty
